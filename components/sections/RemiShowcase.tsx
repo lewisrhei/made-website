@@ -18,6 +18,7 @@ interface ClipMoment {
   type: 'hook' | 'climax' | 'reaction' | 'transition'
   viralPotential: number
   description: string
+  videoUrl?: string
 }
 
 interface PlatformFormat {
@@ -41,27 +42,30 @@ interface AIVideoTemplate {
 const clipMoments: ClipMoment[] = [
   {
     id: '1',
-    timestamp: '0:45',
-    duration: '15s',
+    timestamp: '0:00',
+    duration: '3s',
     type: 'hook',
     viralPotential: 95,
-    description: 'Perfect opening hook - high energy reveal'
+    description: 'Perfect opening hook - high energy reveal',
+    videoUrl: '/agents/remi_clip1.webm'
   },
   {
     id: '2',
-    timestamp: '3:21',
-    duration: '30s',
+    timestamp: '0:03',
+    duration: '3s',
     type: 'climax',
     viralPotential: 92,
-    description: 'Main story climax - emotional peak'
+    description: 'Main story climax - emotional peak',
+    videoUrl: '/agents/remi_clip2.webm'
   },
   {
     id: '3',
-    timestamp: '7:18',
-    duration: '20s',
+    timestamp: '0:06',
+    duration: '3s',
     type: 'reaction',
     viralPotential: 88,
-    description: 'Genuine surprise reaction - shareable'
+    description: 'Genuine surprise reaction - shareable',
+    videoUrl: '/agents/remi_clip3.webm'
   }
 ]
 
@@ -287,23 +291,36 @@ export default function RemiShowcase({ agentData }: { agentData: any }) {
               <div className="relative bg-black/50 rounded-xl overflow-hidden">
                 {/* Video Frame */}
                 <div className="aspect-video bg-gradient-to-br from-purple-900/20 to-pink-900/20 relative">
-                  {/* Scanning Effect */}
+                  {/* Actual Video */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentClip}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="absolute inset-0"
+                    >
+                      {clipMoments[currentClip].videoUrl && (
+                        <video
+                          className="w-full h-full object-cover"
+                          src={clipMoments[currentClip].videoUrl}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                        />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {/* Scanning Effect Overlay */}
                   <motion.div
-                    className="absolute inset-y-0 w-1 bg-gradient-to-b from-transparent via-purple-400 to-transparent"
+                    className="absolute inset-y-0 w-1 bg-gradient-to-b from-transparent via-purple-400/50 to-transparent pointer-events-none"
                     animate={{ x: ['0%', '100%'] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                     style={{ left: 0 }}
                   />
-
-                  {/* Play Button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      className="w-16 h-16 bg-white/10 backdrop-blur rounded-full flex items-center justify-center"
-                    >
-                      <Play className="w-8 h-8 text-white ml-1" />
-                    </motion.div>
-                  </div>
 
                   {/* Current Clip Indicator */}
                   <AnimatePresence mode="wait">
@@ -312,7 +329,7 @@ export default function RemiShowcase({ agentData }: { agentData: any }) {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
-                      className="absolute top-4 left-4 bg-black/60 backdrop-blur rounded-lg p-3"
+                      className="absolute top-4 left-4 bg-black/60 backdrop-blur rounded-lg p-3 z-10"
                     >
                       <div className="flex items-center gap-2 mb-1">
                         <Zap className="w-4 h-4 text-yellow-400" />
@@ -332,7 +349,7 @@ export default function RemiShowcase({ agentData }: { agentData: any }) {
                     <motion.div
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
                       animate={{ width: ['0%', '100%'] }}
-                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                      transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
                     />
 
                     {/* Clip Markers */}
@@ -340,7 +357,7 @@ export default function RemiShowcase({ agentData }: { agentData: any }) {
                       <motion.div
                         key={clip.id}
                         className="absolute top-1/2 -translate-y-1/2"
-                        style={{ left: `${(idx + 1) * 25}%` }}
+                        style={{ left: `${16.5 + idx * 33.33}%` }}
                         initial={{ scale: 0 }}
                         animate={{ scale: currentClip === idx ? 1.5 : 1 }}
                         transition={{ type: "spring" }}
@@ -357,7 +374,7 @@ export default function RemiShowcase({ agentData }: { agentData: any }) {
                   {/* Time Display */}
                   <div className="flex justify-between mt-2">
                     <span className="text-white/40 text-xs">0:00</span>
-                    <span className="text-white/40 text-xs">10:42</span>
+                    <span className="text-white/40 text-xs">0:09</span>
                   </div>
                 </div>
               </div>
