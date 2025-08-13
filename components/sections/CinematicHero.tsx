@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowDown, Sparkles } from 'lucide-react'
+import { ArrowDown, Sparkles, TrendingUp, Zap, Battery } from 'lucide-react'
 import { vtmData } from '@/lib/vtm-data'
 import { useState, useEffect } from 'react'
 
@@ -188,6 +188,21 @@ function AgentAvatar({ agent, index }: { agent: any; index: number }) {
 
 export default function CinematicHero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [activeBenefit, setActiveBenefit] = useState(0)
+
+  const benefits = [
+    { text: 'Create better', icon: Sparkles },
+    { text: 'Grow faster', icon: TrendingUp },
+    { text: 'No burnout', icon: Battery }
+  ]
+
+  // Cycle through benefits - stay longer on each
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveBenefit((prev) => (prev + 1) % benefits.length)
+    }, 3500) // Increased from 2500ms to 3500ms
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -217,21 +232,63 @@ export default function CinematicHero() {
 
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
             <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60">
-              Your AI creative team.
+              Your creative dream team.
             </span>
             <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white/60 to-white/30">
-              Six agents. One mission.
+              Free to create without limits.
             </span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-white/50 max-w-2xl mx-auto mb-16">
-            Professional creators powered by AI. From ideation to publication.
-          </p>
+          {/* Animated Benefits Row */}
+          <div className="flex items-center justify-center gap-8 mt-8 mb-8">
+            {benefits.map((benefit, index) => {
+              const Icon = benefit.icon
+              return (
+                <motion.div
+                  key={benefit.text}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                  className="relative"
+                >
+                  {/* Highlight chip that appears behind active benefit */}
+                  <AnimatePresence>
+                    {activeBenefit === index && (
+                      <motion.div
+                        layoutId="benefitHighlight"
+                        className="absolute inset-0 -z-10 bg-gradient-to-r from-white/20 to-white/10 rounded-full"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+                  </AnimatePresence>
+                  
+                  {/* Benefit content */}
+                  <div className={`flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 ${
+                    activeBenefit === index 
+                      ? 'text-white' 
+                      : 'text-white/50'
+                  }`}>
+                    <Icon className={`w-5 h-5 transition-all duration-300 ${
+                      activeBenefit === index ? 'text-white' : 'text-white/60'
+                    }`} />
+                    <span className={`font-semibold text-lg transition-all duration-300 ${
+                      activeBenefit === index ? 'text-white' : 'text-white/60'
+                    }`}>
+                      {benefit.text}
+                    </span>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
         </motion.div>
 
         {/* Agent Team Formation */}
         <motion.div 
-          className="relative h-[420px] mb-4 flex items-end justify-center"
+          className="relative h-[380px] mb-4 flex items-end justify-center"
           animate={{
             x: mousePosition.x,
             y: mousePosition.y
