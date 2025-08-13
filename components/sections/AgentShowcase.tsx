@@ -13,6 +13,8 @@ import ZaraShowcase from './ZaraShowcase'
 import MiloShowcase from './MiloShowcase'
 import RemiShowcase from './RemiShowcase'
 import LilaShowcase from './LilaShowcase'
+import AmieShowcase from './AmieShowcase'
+import EnzoShowcase from './EnzoShowcase'
 
 // Define skills for each agent
 const agentSkills = {
@@ -66,6 +68,14 @@ export default function AgentShowcase({ agentData }: { agentData: any }) {
   
   if (agentData.name === 'Lila') {
     return <LilaShowcase agentData={agentData} />
+  }
+  
+  if (agentData.name === 'Amie') {
+    return <AmieShowcase agentData={agentData} />
+  }
+  
+  if (agentData.name === 'Enzo') {
+    return <EnzoShowcase agentData={agentData} />
   }
 
   const skills = agentSkills[agentData.name as keyof typeof agentSkills] || []
