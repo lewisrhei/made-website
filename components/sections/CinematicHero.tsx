@@ -187,7 +187,6 @@ function AgentAvatar({ agent, index }: { agent: any; index: number }) {
 }
 
 export default function CinematicHero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [activeBenefit, setActiveBenefit] = useState(0)
 
   const benefits = [
@@ -204,16 +203,6 @@ export default function CinematicHero() {
     return () => clearInterval(interval)
   }, [])
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 10,
-        y: (e.clientY / window.innerHeight - 0.5) * 10
-      })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -287,25 +276,14 @@ export default function CinematicHero() {
         </motion.div>
 
         {/* Agent Team Formation */}
-        <motion.div 
-          className="relative h-[380px] mb-4 flex items-end justify-center"
-          animate={{
-            x: mousePosition.x,
-            y: mousePosition.y
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 50,
-            damping: 30
-          }}
-        >
+        <div className="relative h-[380px] mb-4 flex items-end justify-center">
           {/* Agents */}
           <div className="relative w-full h-full">
             {vtmData.map((agent, index) => (
               <AgentAvatar key={agent.id} agent={agent} index={index} />
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* CTA Buttons - Apple Style */}
         <motion.div

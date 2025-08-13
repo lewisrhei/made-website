@@ -34,11 +34,11 @@ export default function HomePage() {
   const darkGradients = [
     'radial-gradient(ellipse 800px 600px at 25% 40%, #06b6d430, transparent), radial-gradient(ellipse 700px 500px at 75% 30%, #facc1525, transparent), radial-gradient(ellipse 650px 450px at 50% 70%, #ec489925, transparent), radial-gradient(ellipse 600px 500px at 85% 60%, #10b98120, transparent), radial-gradient(ellipse 700px 550px at 15% 80%, #ef444420, transparent), radial-gradient(ellipse 550px 400px at 65% 85%, #f9731622, transparent), linear-gradient(180deg, #000000 0%, #050505 100%)', // Hero - darker version of light mode
     'linear-gradient(to bottom right, #1e3a8a, #1e40af, #000000)', // Milo - dark blue
-    'linear-gradient(to bottom right, #78350f, #92400e, #000000)', // Zara - dark yellow/orange  
+    'linear-gradient(to bottom right, #a16207, #eab308, #422006)', // Zara - warm gold  
     'linear-gradient(to bottom right, #581c87, #6b21a8, #000000)', // Remi - dark purple
     'linear-gradient(to bottom right, #14532d, #166534, #000000)', // Enzo - dark green
     'linear-gradient(to bottom right, #7f1d1d, #991b1b, #000000)', // Lila - dark red
-    'linear-gradient(to bottom right, #7c2d12, #92400e, #000000)', // Amie - dark orange
+    'linear-gradient(to bottom right, #ea580c, #f97316, #451a03)', // Amie - vibrant orange to dark
     'linear-gradient(to bottom right, #000000, #020617, #000000)'  // Footer
   ]
 

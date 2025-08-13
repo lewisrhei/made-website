@@ -894,13 +894,7 @@ export default function LilaShowcase({ agentData }: { agentData: any }) {
           {/* Lila Character */}
           <div className="relative">
             {agentData.videoWelcome ? (
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.02, 1],
-                }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="relative"
-              >
+              <div className="relative">
                 <video
                   className="w-full max-w-md mx-auto object-contain drop-shadow-2xl"
                   autoPlay
@@ -910,18 +904,11 @@ export default function LilaShowcase({ agentData }: { agentData: any }) {
                 >
                   <source src={agentData.videoWelcome} type="video/webm" />
                 </video>
-              </motion.div>
+              </div>
             ) : (
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.02, 1],
-                  rotate: [0, 1, -1, 0]
-                }}
-                transition={{ duration: 6, repeat: Infinity }}
-                className="aspect-square max-w-md mx-auto flex items-center justify-center"
-              >
+              <div className="aspect-square max-w-md mx-auto flex items-center justify-center">
                 <div className="text-[200px]">💎</div>
-              </motion.div>
+              </div>
             )}
             
             {/* Floating shield particles */}
