@@ -81,7 +81,7 @@ export default function HomePage() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 mix-blend-difference"
+        className="fixed top-0 left-0 right-0 z-50"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
@@ -98,7 +98,7 @@ export default function HomePage() {
             <motion.button 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 bg-white/90 backdrop-blur-sm text-black rounded-full font-medium transition-all duration-300 hover:bg-white"
+              className="px-6 py-3 bg-white text-black rounded-full font-medium transition-all duration-300 hover:bg-white/95"
             >
               Get Started
             </motion.button>

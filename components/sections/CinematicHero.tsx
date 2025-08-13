@@ -19,20 +19,27 @@ function AgentAvatar({ agent, index }: { agent: any; index: number }) {
     }
   }, [agent.videoWelcome])
 
-  // Position agents based on Figma layout with specific dimensions
-  // Each agent has their own width/height from Figma
-  // Using Milo (208px) as baseline height for bottom alignment
-  const baselineHeight = 208 // Milo's height (tallest)
-  const agentDimensions: Record<string, { width: number; height: number; x: number; bottomOffset: number }> = {
-    'enzo': { width: 201, height: 206, x: -380, bottomOffset: baselineHeight - 206 },  // 2px up
-    'lila': { width: 184, height: 185, x: -210, bottomOffset: baselineHeight - 185 },  // 23px up
-    'amie': { width: 189, height: 191, x: -50, bottomOffset: baselineHeight - 191 },   // 17px up
-    'milo': { width: 227, height: 208, x: 120, bottomOffset: 0 },                      // baseline
-    'zara': { width: 151, height: 175, x: 310, bottomOffset: baselineHeight - 175 },   // 33px up
-    'remi': { width: 213, height: 195, x: 430, bottomOffset: baselineHeight - 195 }    // 13px up
+  // Position agents with consistent sizing between images and videos
+  // Images are 640x480, videos are 736x544
+  // We'll use a fixed container size and scale content to fit
+  const baselineHeight = 480 // 50% bigger than 320
+  const containerWidth = 360 // 50% bigger than 240
+  
+  // Truly centered positioning with overlapping arrangement
+  // For 6 agents to be centered, position them symmetrically around 0
+  const spacing = 200 // Reduced spacing to bring them closer together
+  
+  // Position agents symmetrically: 3 on left, 3 on right of center
+  const agentPositions: Record<string, { x: number; bottomOffset: number }> = {
+    'enzo': { x: -spacing * 2.5, bottomOffset: 0 },  // -500
+    'lila': { x: -spacing * 1.5, bottomOffset: 0 },  // -300
+    'amie': { x: -spacing * 0.5, bottomOffset: 0 },  // -100
+    'milo': { x: spacing * 0.5, bottomOffset: 0 },   // 100
+    'zara': { x: spacing * 1.5, bottomOffset: 0 },   // 300
+    'remi': { x: spacing * 2.5, bottomOffset: 0 }    // 500
   }
   
-  const dimensions = agentDimensions[agent.id] || { width: 200, height: 200, x: 0, bottomOffset: 0 }
+  const position = agentPositions[agent.id] || { x: 0, bottomOffset: 0 }
   const figmaOrder = ['enzo', 'lila', 'amie', 'milo', 'zara', 'remi']
   const agentIndex = figmaOrder.indexOf(agent.id)
 
@@ -42,7 +49,6 @@ function AgentAvatar({ agent, index }: { agent: any; index: number }) {
       animate={{ 
         opacity: 1, 
         scale: 1,
-        x: dimensions.x,
         y: 0
       }}
       transition={{ 
@@ -52,34 +58,43 @@ function AgentAvatar({ agent, index }: { agent: any; index: number }) {
         stiffness: 100,
         damping: 20
       }}
-      className="absolute"
+      className="absolute transition-transform duration-200"
       style={{
-        left: '50%',
-        bottom: 0,
-        width: `${dimensions.width}px`,
-        height: `${dimensions.height}px`,
-        transform: `translateX(-50%) translateY(${dimensions.bottomOffset}px)`,
-        zIndex: 6 - agentIndex
+        left: `calc(50% + ${position.x}px - ${containerWidth/2}px)`,
+        bottom: '60px',
+        width: `${containerWidth}px`,
+        height: `${baselineHeight}px`,
+        zIndex: isHovered ? 20 : 6 - agentIndex,
+        transform: isHovered ? 'scale(1.05)' : 'scale(1)'
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      whileHover={{ scale: 1.05, zIndex: 10 }}
     >
-      <div className="relative w-full h-full cursor-pointer">
-        {/* Static Image - No rounded, show full character */}
+      <div className="relative w-full h-full">
+        {/* Invisible hover trigger area - narrow width, full height */}
+        <div 
+          className="absolute inset-x-[30%] inset-y-0 z-30 cursor-pointer"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        />
+        {/* Static Image - Consistent sizing */}
         <AnimatePresence>
           {!isHovered && (
             <motion.div
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-0"
+              className="absolute inset-0 flex items-end justify-center"
             >
               {agent.heroImage ? (
                 <img 
                   src={agent.heroImage} 
                   alt={agent.name}
-                  className="w-full h-full object-contain drop-shadow-2xl"
+                  className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                  style={{
+                    width: 'auto',
+                    height: 'auto',
+                    maxWidth: '100%',
+                    maxHeight: '100%'
+                  }}
                 />
               ) : (
                 <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center shadow-2xl">
@@ -90,7 +105,7 @@ function AgentAvatar({ agent, index }: { agent: any; index: number }) {
           )}
         </AnimatePresence>
 
-        {/* Video on Hover */}
+        {/* Video on Hover - Consistent sizing */}
         <AnimatePresence>
           {isHovered && agent.videoWelcome && videoLoaded && (
             <motion.div
@@ -98,10 +113,16 @@ function AgentAvatar({ agent, index }: { agent: any; index: number }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-0"
+              className="absolute inset-0 flex items-end justify-center"
             >
               <video
-                className="w-full h-full object-contain drop-shadow-2xl"
+                className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                style={{
+                  width: 'auto',
+                  height: 'auto',
+                  maxWidth: '100%',
+                  maxHeight: '100%'
+                }}
                 autoPlay
                 loop
                 muted
@@ -112,16 +133,50 @@ function AgentAvatar({ agent, index }: { agent: any; index: number }) {
             </motion.div>
           )}
         </AnimatePresence>
+        
+        {/* Speech Bubble on Hover - At same level as images */}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 flex items-start justify-center pointer-events-none z-50"
+            >
+              <div className="mt-40">
+                <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-2xl shadow-2xl relative">
+                  <p className="text-black font-semibold text-sm whitespace-nowrap">
+                    {agent.catchphrase || `Hi, I'm ${agent.name}!`}
+                  </p>
+                  {/* Speech bubble tail */}
+                  <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-0 h-0 
+                    border-l-[8px] border-l-transparent
+                    border-r-[8px] border-r-transparent
+                    border-t-[8px] border-t-white/95">
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Subtle glow effect on hover */}
-        <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${agent.gradientColors} blur-2xl opacity-0 hover:opacity-40 transition-opacity duration-500 scale-125`} />
+        {/* Subtle glow effect on hover - behind everything, spotlight effect */}
+        <motion.div 
+          className={`absolute left-1/2 -translate-x-1/2 bottom-0 w-[60%] h-[70%] bg-gradient-to-br ${agent.gradientColors} blur-2xl`}
+          style={{ zIndex: -1 }}
+          animate={{ 
+            opacity: isHovered ? 0.4 : 0 
+          }}
+          transition={{ duration: 0.3 }}
+        />
         
         {/* Agent Name */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 + agentIndex * 0.1 }}
-          className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap"
+          className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap z-10"
           style={{ bottom: '-35px' }}
         >
           <h3 className="font-semibold text-white text-base drop-shadow-lg">{agent.name}</h3>
@@ -174,9 +229,9 @@ export default function CinematicHero() {
           </p>
         </motion.div>
 
-        {/* Agent Team Formation - Figma Layout */}
+        {/* Agent Team Formation */}
         <motion.div 
-          className="relative h-[250px] mb-16 flex items-end justify-center"
+          className="relative h-[420px] mb-4 flex items-end justify-center"
           animate={{
             x: mousePosition.x,
             y: mousePosition.y
@@ -187,27 +242,7 @@ export default function CinematicHero() {
             damping: 30
           }}
         >
-          {/* Radial burst effect background */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative w-[600px] h-[400px]">
-              {/* Add decorative radial lines */}
-              {[...Array(12)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute left-1/2 top-1/2 w-[1px] h-[200px] bg-gradient-to-t from-transparent via-white/5 to-transparent"
-                  style={{
-                    transformOrigin: 'center bottom',
-                    transform: `rotate(${i * 30}deg) translateX(-50%)`
-                  }}
-                  initial={{ opacity: 0, scaleY: 0 }}
-                  animate={{ opacity: 1, scaleY: 1 }}
-                  transition={{ delay: i * 0.05, duration: 0.5 }}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Agents in arc formation */}
+          {/* Agents */}
           <div className="relative w-full h-full">
             {vtmData.map((agent, index) => (
               <AgentAvatar key={agent.id} agent={agent} index={index} />
@@ -231,20 +266,6 @@ export default function CinematicHero() {
           </button>
         </motion.div>
 
-        {/* Minimal Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.5 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <ArrowDown className="w-5 h-5 text-white/30" />
-          </motion.div>
-        </motion.div>
       </div>
     </section>
   )
