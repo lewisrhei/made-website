@@ -10,6 +10,9 @@ import {
   Bug, Hand, Star
 } from 'lucide-react'
 import ZaraShowcase from './ZaraShowcase'
+import MiloShowcase from './MiloShowcase'
+import RemiShowcase from './RemiShowcase'
+import LilaShowcase from './LilaShowcase'
 
 // Define skills for each agent
 const agentSkills = {
@@ -48,9 +51,21 @@ const agentSkills = {
 export default function AgentShowcase({ agentData }: { agentData: any }) {
   const [activeSkill, setActiveSkill] = useState('')
   
-  // Use Zara's special showcase
+  // Use special showcases for Zara, Milo, Remi, and Lila
   if (agentData.name === 'Zara') {
     return <ZaraShowcase agentData={agentData} />
+  }
+  
+  if (agentData.name === 'Milo') {
+    return <MiloShowcase agentData={agentData} />
+  }
+  
+  if (agentData.name === 'Remi') {
+    return <RemiShowcase agentData={agentData} />
+  }
+  
+  if (agentData.name === 'Lila') {
+    return <LilaShowcase agentData={agentData} />
   }
 
   const skills = agentSkills[agentData.name as keyof typeof agentSkills] || []
